@@ -14,7 +14,7 @@ Logback的设计者Ceki Gülcü(同时也是log4j的创始人)，他的初衷是
 
 #### 前期准备
 
-- 为了能够运行本章中的实例，你需要保证的你类路径已经包含了特定的jar包。请到[初始页](https://logback.qos.ch/setup.html)面查询更详细的内容。jar的内容如下:
+- 为了能够运行本章中的实例，你需要保证的你类路径已经包含了特定的jar包。请到[初始页](https://logback.qos.ch/setup.html)面查看更详细的内容。jar的内容如下:
 
   - logback-core-1.3.0-alpha4.jar
   - logback-classic-1.3.0-alpha4.jar
