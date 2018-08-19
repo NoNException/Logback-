@@ -68,7 +68,7 @@ java chapters.introduction.HelloWorld1
 
 Logback可以同过内建的转改系统来报告其状态。StatusManager组件可以汇报logback声明周期内重要的事件，现在，让我们通过调用StatusPrinter类的print()方法来打印logback的内部状态吧
 
-##### 示例1.2：打印日志状态*([logback-examples/src/main/java/chapters/introduction/HelloWorld2.java](https://logback.qos.ch/xref/chapters/introduction/HelloWorld2.html))*
+##### 示例1.2：打印日志状态([logback-examples/src/main/java/chapters/introduction/HelloWorld2.java](https://logback.qos.ch/xref/chapters/introduction/HelloWorld2.html))
 
 ```java
 package chapters.introduction;
@@ -101,13 +101,11 @@ public class HelloWorld2 {
 21:53:15,092 |-INFO in ch.qos.logback.classic.BasicConfigurator@9536ecf - Setting up default configuration.
 ```
 
-上面的日志表明Logback没有找到 logback-test.xml或者logback.xml配置文件（稍后解释），于是它使用了默认的配置策略：使用ConsoleAppender（Apender类决定了输出日志的方式），Appenders使日志可以通过很多方式输出，包括控制台、文件、系统日志、TCP套接字，JMS甚至更过，使用者甚至可以根据情况定制自己的Appender。
+上面的日志表明Logback没有找到 logback-test.xml或者logback.xml配置文件（稍后解释），于是它使用了默认的配置策略：使用ConsoleAppender（Apender类决定了输出日志的方式），Appenders使日志可以通过很多方式输出，包括控制台、文件、系统日志、TCP套接字，JMS甚至更多，使用者甚至可以根据情况定制自己的Appender。
 
-**注意：**logback会自动打印内部的错误到控制台。
+ **注意：**logback会自动打印内部的错误到控制台。
 
-虽然实例1.2相对来说比较简单，然而即使对于一个稍大的应用来说，日志声明模式也不会有什么改变，
-
-只是日志的配置过程会有一些不同。如果你想根据自己的需要来定制化logback，接下来章节会给你提供帮助。
+虽然实例1.2相对来说比较简单，然而即使对于一个稍大的应用来说，日志声明模式也不会有什么改变，只是日志的配置过程会有一些不同。如果你想根据自己的需要来定制化logback，接下来章节会给你提供帮助。
 
 在上面的例子里，我们看到logback通过调用静态方法StatusPrinter.print()来打印其内部状态状态。**注意：**
 
