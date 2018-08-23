@@ -107,9 +107,9 @@ public class HelloWorld2 {
 
 虽然实例1.2相对来说比较简单，然而即使对于一个稍大的应用来说，日志声明模式也不会有什么改变，只是日志的配置过程会有一些不同。如果你想根据自己的需要来定制化logback，接下来章节会给你提供帮助。
 
-在上面的例子里，我们看到logback通过调用静态方法StatusPrinter.print()来打印其内部状态状态。**注意：**
+在上面的例子里，我们看到logback通过调用静态方法StatusPrinter.print()来打印其内部状态状态。
 
-了解logback的内部状态对于诊断logback相关的问题非常有用。
+**注意：**了解logback的内部状态对于诊断logback相关的问题非常有用。
 
 下面的列表说明在你的应用中使用logback的必要步骤：
 
@@ -124,3 +124,57 @@ logback通过[Maven](http://maven.apache.org/)来构建，如果你已经安装M
 logback发行包中包含了所有的源代码，在遵从LGPL或者EPL开源许可下，你可以修改l任意代码甚至构建、发布你自己的版本。
 
 对于logback在IDE（集成开发环境）下的构建，请查看[类路径设置的相关章节](https://logback.qos.ch/setup.html#ide)。
+
+### 第二章：架构
+
+#### Logback系统架构
+
+logback拥有在不同环境下都相对通用的架构。当前Logback拥有三个主要的模块，分别是logback-core，logback-classic和logback-access。
+
+logback-core模块是其他两个基础，logback-classic是logback-core模块的扩展。其中logback-classic相对于log4j有了显著的提升，并且其实现了[SLF4J API](http://www.slf4j.org/),所以你可以很容易地从logback切换到其他日志系统，例如log4j或者JDK1.4中引入的java.util.logging(JUL)。而logback-access模块集成了Servlet容器，可以提供HTTP日志访问功能。相关的文档参阅[logback-access模块文档](https://logback.qos.ch/access.html)
+
+在当前文档中，我们提到的logback模块默认指的是logback-classic模块。
+
+#### Logger,Appenders and Layouts
+
+Logback建立在三个主要类之上：Logger,Appender和layout。这三个组件协同工作可以使开发者根据消息类型和日志级别记录信息，或者组织运行时日志的打印格式和输出方式。
+
+从模块归属结构来讲，Logger类属于logback-classic模块，Appender和Layout属于logback-core模块。作为一个通用模块，logback不包含任何日志记录的概念。
+
+#### Logger上下文 
+
+日志API相对于Systm.out.println语句，前者最重要的要求是能够在禁用一些日志输出的同时又不能影响其他日志的输出。达到这样的要求，需要将所有的日志能够按照开发者的自主选择进行分类。在logback-classic模块中，日志类别是每个日志记录器（logger）的固有属性。每一个logger都会被归属于LoggerContext类，既日志上下文。LoggerContext类将负责每一个日志记录器的生成和管理。
+
+每一个logger都必须被命名，并且他们的名字是**大小写敏感**的其应该遵守下面的层次化规则。
+
+**logger之间的继承关系通过“.”来实现，如果一个logger A的名称加上“.”之后是另一个logger B 名称的前缀，那么A是B的祖先，与此同时，如果当前日志上下文中没有位于A和B继承关系之间的logger，那么A为B之父。**
+
+举例来说，名为“com.foo"的logger为名为“com.foo.Bar”的logger之父。类似的，"java"是“java.util”之父，同时也是"java.util.Vecor"的祖先。大多数的开发者都应该熟悉这样的命名格式。
+
+根日志记录器位于整个日志层级的最顶端，它的特别之处是它是所有日志记录器的共同始祖。与所有日志记录器（logger）一样，它也可以通过名字获取，方式如下：
+
+```java
+Logger rootLogger = LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);	
+```
+
+所有的其他日志记录器（Logger类）同样也能通过org.slf4j.LoggerFactory的静态方法getLogger获取。这个方法接收日志记录器的名字作为入参。下面列举Logger接口的基本方法：
+
+```java
+package org.slf4j; 
+public interface Logger {
+
+  // 打印方法 
+  public void trace(String message);
+  public void debug(String message);
+  public void info(String message); 
+  public void warn(String message); 
+  public void error(String message); 
+}
+```
+
+
+
+
+
+
+
