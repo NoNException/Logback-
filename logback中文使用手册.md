@@ -48,7 +48,7 @@ public class HelloWorld1 {
 
 *HelloWorld1*类被定义在chapters.introduction包下，他的main方法中使用了SELF4J API中定义Logger类和LoggerFactory工厂方法。
 
-分析这个简单的例子我们可以发现main方法中声明了一个打印DEBUG级别内容“Hello world”的日志。具体的过程是：main方法首先调用*LoggerFactory*工厂的静态方法创建了一个*Logger*类的实例*logger*，它名字是“chapters.introduction.HelloWorld1”，接下来调用了logger的debug方法，同时以"Hello world"作为方法入参。
+分析这个简单的例子我们可以发现main方法中声明了一个打印DEBUG级别内容“Hello world”的日志。具体的过程是：main方法首先调用`LoggerFactory`工厂的静态方法创建了一个*Logger*类的实例*logger*，它名字是“chapters.introduction.HelloWorld1”，接下来调用了logger的debug方法，同时以"Hello world"作为方法入参。
 
 值得注意的是，上面的例子没有引用任何一个logback的类。在大多数情况下，当你需要在你的类中考虑使用日志的时候，你只需要引入SLF4J的类就足够了。因此，如果你的代码使用SLF4J API,你可以完全忽略logback的存在。
 
@@ -171,6 +171,140 @@ public interface Logger {
   public void error(String message); 
 }
 ```
+
+Effective Level aka Level Inheritance
+
+#### 日志级别继承
+
+日志记录器可以被指定级别。上面的级别（`TRACE`，`DEBUG`，`INFO`，`ERROR`)被定义在`cn.qos.logback.classic.Level`类中，在logback中Level被定义为final类型的且不能继承，而`Marker`对象则提供了更加灵活的方法。
+
+如果一个日志记录器没有被指定级别，那么他会从他最近的一个祖先的日志记录器中继承日志级别，下面是更加正式的表示：
+
+**对于一个给定的日志记录器L的有效日志级别，等于从L本身的级别(直到根日志记录器（root logger）开始的第一个非空（non-null）的日志级别。**
+
+为了保证所有的日志记录器最终都能继承到一个日志级别，根日志记录器总是会被关联一个日志级别，其默认的日志等级是DEBUG。
+
+下面四个例子说明了在日志记录器的级别继承规则下，其有效级别的例子
+
+*示例1*
+
+| 日志记录器 | 关联日志级别 | 有效日志级别 |
+| ---------- | ------------ | ------------ |
+| root       | DEBUG        | DEBUG        |
+| X          | none         | DEBUG        |
+| X.Y        | none         | DEBUG        |
+| X.Y.Z      | none         | DEBUG        |
+
+示例1中，只有根日志记录器被关联的DEBUG级别，所以DEBUG的日志级别被所有的其他日志记录器所继承（X,X.Y,X.Y.Z）
+
+*示例2*
+
+| 日志记录器 | 关联日志级别 | 有效日志级别 |
+| ---------- | ------------ | ------------ |
+| root       | ERROR        | ERROR        |
+| X          | INFO         | INFO         |
+| X.Y        | DEBUG        | DEBUG        |
+| X.Y.Z      | WARN         | ERROR        |
+
+示例2中，所有的日志记录器都被关联了日志级别，日志的继承规则没有起作用
+
+*示例3*
+
+| 日志记录器 | 关联日志级别 | 有效日志级别 |
+| ---------- | ------------ | ------------ |
+| root       | DEBUG        | DEBUG        |
+| X          | INFO         | INFO         |
+| X.Y        | none         | INFO         |
+| X.Y.Z      | ERROR        | ERROR        |
+
+示例3中，`root looger`、`X`、`X.Y.Z`分别被关联了`DEBUG`、`INFO`和`ERROE`级别，而`X.Y`则继承了他的父辈`X`的级别
+
+*示例4*
+
+| 日志记录器 | 关联日志级别 | 有效日志级别 |
+| ---------- | ------------ | ------------ |
+| root       | DEBUG        | DEBUG        |
+| X          | INFO         | INFO         |
+| X.Y        | none         | INFO         |
+| X.Y.Z      | none         | INFO         |
+
+示例4中，`root logger` 和 `X` 分别被关联了` DEBUG`和 `INFO`级别，而没有关联日志级别的`X.Y` 和` X.Y.Z`则从他们的最近的，已经关联了日志级别`INFO`的父辈`X`中继承到了对应的日志级别
+
+#### 级别的打印策略和选择规则
+
+根据定义，日志记录器的打印方法决定了打印请求的级别。例如，L代表了一个日志记录器，那么L.info(...)方法则表示一个INFO级别的**日志记录请求**。
+
+一个日志记录请求的只有当其本身的级别等于或者高于日志记录器的级别时才是有效(enabled)的，否则称为无效的(disabled)。如同之前描述的，一个没有关联级别的日志记录器会从其祖辈中继承一个级别。下面是总结的表述
+
+#### **基本选择规则：**
+
+#### **一个有效级别为q的日志记录器发起了级别为p的日志记录请求，当且只当p>=q时，日志请求才是有效的**
+
+这个规则是logback的核心，级别之间则按照如下排序：TRACE<DEBUG<INFO<WARN<ERROR
+
+下面的图标对于选择规则的的表示更加直观，表格的行头说明了日志请求的级别p，列头则代表的日志记录器的有效级别q，而行列交叉处的布尔值则代表了基本选择规则下的日志请求的有效值。
+
+| 日志请求级别p | 日志记录器的有效级别 q |           |          |          |           |         |
+| :------------ | :--------------------- | :-------- | -------- | :------- | --------- | ------- |
+| \             | **TRACE**              | **DEBUG** | **INFO** | **WARN** | **ERROR** | **OFF** |
+| **TRACE**     | *YES*                  | NO        | NO       | NO       | NO        | NO      |
+| **DEBUG**     | *YES*                  | *YES*     | NO       | NO       | NO        | NO      |
+| **INFO**      | *YES*                  | *YES*     | *YES*    | NO       | NO        | NO      |
+| **WARN**      | *YES*                  | *YES*     | *YES*    | *YES*    | NO        | NO      |
+| **ERROR**     | *YES*                  | *YES*     | *YES*    | *YES*    | *YES*     | NO      |
+
+下面的也可以说明基本选择规则
+
+```java
+import ch.qos.logback.classic.Level;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+....
+
+// 获取名为 "com.foo"的日志记录器. 为了能设置日志记录器等级，我们将其转换为
+// ch.qos.logback.classic.Logger 类
+ch.qos.logback.classic.Logger logger = 
+        (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.foo");
+// 设置日志记录器等级为INFO
+logger.setLevel(Level. INFO);
+
+Logger barlogger = LoggerFactory.getLogger("com.foo.Bar");
+
+// 此日志记录请求有效，因为WARN(日志记录请求等级)>= INFO(日志记录器"com.foo"日志等级)
+logger.warn("Low fuel level.");
+
+// 此日志记录请求无效, 因为DEBUG(日志记录请求等级) < INFO(日志记录器"com.foo"日志等级)
+logger.debug("Starting search for nearest gas station.");
+
+// 日志记录器“com.foo.Bar"继承了"com.foo"的日志等级"INFO"，
+// 因此其INFO级别的日志请求是有效的
+// 因为 INFO(日志记录请求等级) >= INFO(日志记录器"com.foo.Bar"日志等级)
+barlogger.info("Located nearest gas station.");
+
+// 此日志记录请求无效, 因为DEBUG(日志记录请求等级) < INFO(日志记录器"com.foo.Bar"日志等级) 
+barlogger.debug("Exiting gas station search");
+```
+
+#### 获取日志记录器
+
+当使用相同的名称从`LoggerFactory.getLogger`方法中获取日志记录器时，总是会返回同一个日志记录器对象的引用。对于如下的例子
+
+```java
+Logger x = LoggerFactory.getLogger("wombat");
+Logger y = LoggerFactory.getLogger("wombat");
+```
+
+x 和 y 指向的都是同一个日志记录器对象。
+
+因此，对于一个已经配置好的日志记录器来说，即使不在代码中传递该对象的引用，你也能获取到同一个对象。与生物当中的父辈先于子辈出现不同，logback中的日志记录器会被无序的实例化，即使父辈晚于子辈被实例化，其也能正确的关联到子辈。
+
+logback环境的配置通常是在应用初始化的过程中完成。建议优先选用读取配置文件的方式来，此方式将在稍后讨论。
+
+Logback 简化了日志记录器的命名，方法是在每个类里初始化日志记录器，以类的全限定名作为其命名。这种定义的方法即有用又直观。由于日志输出时会包含日志记录器的名字，此命名方式可以很容易地确定记录消息来源。Logback 不限制 logger 名，作为一个开发者，你也可以随意命名日志记录器。 
+
+然而，以所在类来为logger命名似乎是目前已知最好的命名方式。
+
+
 
 
 
