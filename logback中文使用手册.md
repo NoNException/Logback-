@@ -1,5 +1,11 @@
 # Logback User Manual
 
+[TOC]
+
+
+
+
+
 ## 引言
 
 **士气的影响力是惊人的。任何一个使是最简单系统的运行,也足以振奋人心。而当一个图形系统能显示图片时，即使那仅仅是一个矩形，这样的热情也会翻倍。类似的情形总是会出现在一个可运行系统发展的各个阶段上。我发现这样的团队可以在四个月内构建出比他们想象中更复杂的系统**
@@ -360,3 +366,49 @@ if(logger.isDebugEnabled()) {
 ```
 
 当日志记录器logger的输出级别高于DEBUG时，这确实是有效的。但是，如果logger的输出级别是DEBUG级别时，性能消耗就不可避免了，此时性能消耗的地方还变成了两个：`debugEnable`和`debug`方法各一个。在实际情况下，前者消耗的时间是微不足道的，其时间消耗不足后者的1%
+
+#### 更好的选择
+
+logback提供更好的选择。假设`entry`是一个对象，你可以按照下面的方式来写
+
+```java
+Object entry = new SomeObject();
+logger.debug("The entry is {}.", entry);
+```
+
+只有当日志请求时有效的时候，日志记录器才会将`{}`替换成entry的字符串值。换句话说，当日志请求不可用的时候，这句话不会因为参数构造而产的消耗。
+
+下面的两个语句会产生两个相同的输出结果，然而当日志请求不可用的情况下，后者的表现至少比前者好30%
+
+```java
+logger.debug("The new entry is " + entry + ".");
+logger.debug("The new entry is {}.", entry);
+```
+
+两个入参的方式也是可行的，比如说你可以这么写
+
+```java
+logger.debug("The new entry is {}. It replaces {}.", entry,oldEntry);
+```
+
+如果有三个或者更多的输入参数需要被记录，你可以使用`Object[]`的形式，如下
+
+```java
+Object[] paramArray = {newVal, below, above};
+logger.debug("Value {} was inserted between {} and {}.", paramArray);
+```
+
+#### 内部一览
+
+在我们介绍完重要的logback组件之后，我们现在来讲解一下当用户调用日志记录器的打印方法时，日志框架的处理步骤。我们就以名为"com.wombat"日志记录器调用`info()`方法举例。
+
+1. 获得责任链的过滤结果
+
+   如果存在，`TurboFilter`责任链会被滴啊用。Turbo 过滤器会设置一个全局级别的阈值，或者根据日志记录器上绑定的信息例如`Marker`,`Level`,`Logger`,`message`,`Throwable`的来筛选出特定的日志请求。如果责任链返回的结果是`FilterReply.DENY`，那么这个日志请求就会被抛弃，如果返回`FilterReply.NEUTRAL`则进行第二步，同时，如果返回的是`FilterReply.ACCEPT`，我们跳过第二步，直接进入第三步。
+
+2. 应用基准选择规则
+
+   在这一步，logback比较日志请求对于日志记录器的有效用。如果日志请求是无效的，那么logback框架就会抛弃日志请求，否则，进入下一步。
+
+3. 创建`LoggingEvent`对象
+
