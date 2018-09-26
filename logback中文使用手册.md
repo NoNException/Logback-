@@ -470,7 +470,22 @@ x.debug("Entry number: {} is {}", i, entry[i]);
 
 尽管功能丰富，logback 最首要设计目标可靠性和执行速度。logback 的一些组件已经被多次重写来提高性能。
 
+### 第三章 配置
 
+本章的内容将按照一系列配置文件的形式来展现logback的配置方式。Joran，作为logback的配置框架将在之后的章节讨论
+
+#### Logback中的配置
+
+在应用代码中插入日志需要经过谨慎的思考，应用中大约4%的代码与日志相关。因此即使是一个中等规模的应用也需要考虑插入上千条的日志语句。基于这样的考虑，需要引用工具来管理这些日志语句
+
+Logback可以通过代码和类似于XML或者Groovy的脚本来管理配置。与此同时，log4j用户可以通过我们的[PropertiesTranslator](http://logback.qos.ch/translator/)应用来实现log4j.properties文件到logback.xml文件的转换。
+
+让我们以logback的配置初始化步骤展开讨论：
+
+- Logback尝试在类路径（classpath）下查找*logback.xml*文件
+- 如果没有找这个文件，logback转为在类路径下查找*logback.grooy*文件
+- 如果还是没有找到，则继续在相同目录下查找*logback.xml*文件
+- 如果还是没有
 
 
 
