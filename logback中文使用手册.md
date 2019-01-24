@@ -476,7 +476,7 @@ x.debug("Entry number: {} is {}", i, entry[i]);
 
 #### Logback中的配置
 
-在应用代码中插入日志需要经过谨慎的思考，应用中大约4%的代码与日志相关。因此即使是一个中等规模的应用也需要考虑插入上千条的日志语句。基于这样的考虑，需要引用工具来管理这些日志语句
+在应用代码中插入日志需要经过谨慎的思考，应用中大约4%的代码与日志相关。因此即使是一个中等规模的应用也需要考虑插入上千条的日志语句。基于这样的考虑，需要引用工具来管理这些日志语句。
 
 Logback可以通过代码和类似于XML或者Groovy的脚本来管理配置。与此同时，log4j用户可以通过我们的[PropertiesTranslator](http://logback.qos.ch/translator/)应用来实现log4j.properties文件到logback.xml文件的转换。
 
@@ -485,7 +485,10 @@ Logback可以通过代码和类似于XML或者Groovy的脚本来管理配置。�
 - Logback尝试在类路径（classpath）下查找*logback.xml*文件
 - 如果没有找这个文件，logback转为在类路径下查找*logback.grooy*文件
 - 如果还是没有找到，则继续在相同目录下查找*logback.xml*文件
-- 如果还是没有
+- 如果还是没有，则通过java 1.6中的[服务加载](http://docs.oracle.com/javase/6/docs/api/java/util/ServiceLoader.html)形式，即通过在类路径下的*META-INF\services\ch.qos.logback.classic.spi.Configurator*文件中查找其实现类的全类名类加载`Configuration`的实现类.
+- 如果上面的尝试都没有成功，logback会使用`BasicConfigurator`来完成配置，当然其也会造成所有的日志输出都指向了控制台
+
+
 
 
 
