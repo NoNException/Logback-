@@ -167,6 +167,190 @@ iM		选择函数或者方法之间的内容。例如:`viM,diM,yiM,ciM`(普通模
 
 ---
 
+2.5 文档展示
 
+Python-mod 可以通过`pydoc`来展示当前词汇的python文档。
+
+命令：`:PymodeDoc` <args> - 展示文档 
+
+打开Python-mod文档功能
+>
+	let g:pymode_doc = 1
+
+绑定快捷键方式展示Python文档
+>
+	let g:pymode_doc_bind = 'K'
+
+---
+
+2.6 支持虚拟环境
+
+命令模式下输入:`:PymodeVirtualenv` <path> -- 启用虚拟环境(路径可以为绝对路径或者当前路径的相对路径)
+
+启用虚拟环境自动化检测:
+>
+	let g:pymode_virtualenv = 1
+
+手动设置虚拟环境的路径
+>
+    let g:pymode_virtualenv_path = $VIRTUAL_ENV
+
+---
+
+2.7 运行代码
+
+命令模式下输入:`:PymodeRun` -- 运行当前缓冲区或者选择的代码
+
+开启运行代码功能:
+>
+	let g:pymode_run - 1
+
+绑定快捷键运行Python代码:
+>
+	let g:pymode_run_bind = '<leader>r'
+
+---
+
+2.8 断点功能
+
+Python-mode可以体用有效的Debugger工具(例如 pdb,ipdb,pudb)并且用户可以一键设置/取消
+断点。
+
+设置改功能有效:
+>
+    let g:pymode_breakpoint = 1
+	
+绑定快捷键：
+>
+    let g:pymode_breakpoint_bind = '<leader>b'
+
+人工设置断点（设置为空时，标识自动标识断点)
+>
+    let g:pymode_breakpoint_cmd = ''
+
+
+---
+
+3.代码检测
+
+Python-mod 支持`pylint`,`pep257`,`pep8`,`pyflakes`,`maccabe`的代码检查，可以同时运行几个这样的检查:
+
+`Python-mod使用Pylama库用于代码检查.在pylama.ini文件中可以定义例如跳过文件，错误等功能。可以查看Pylama的文档了解更多功能`
+
+`Pylint的相关配置被定义在$HOME/pylint.rc文件中，查看pylint了解更多细节`
+
+命令模式下输入:
+
+*:PymodeLint* -- 检查当前缓冲区中的代码
+*:PymodeLintToggle* -- ？
+*:PymodeLintAuto* -- 修复当前缓冲区中不符合PEP8的代码
+
+开启代码检测:
+>
+	let g:pymode_lint = 1
+
+在每次保存代码时进行检测(如果当前文件被修改的前提下)
+>
+    let g:pymode_lint_on_write = 1
+
+当进行文件编辑时修改代码:
+>
+    let g:pymode_lint_on_fly = 0
+
+当鼠标防止在错误的一行时显示错误的详情
+>
+    let g:pymode_lint_message = 1
+	
+设置默认的代码检测器(你可以同时设置多个)
+>
+    let g:pymode_lint_checkers = ['pyflakes', 'pep8', 'mccabe']
+
+该配置有一下可选项 `pylint`, `pep8`, `mccabe`, `pep257`, `pyflakes`
+
+跳过错误和警告
+
+`W`, `E2` 其中E2用来跳过所有的错误和警告
+>
+    let g:pymode_lint_ignore = ["E501", "W",]
+
+选择一些错误或者警告:
+
+例如，你可以禁用所有'W'标识的警告的同时查看`W0011`或者`W430`
+>
+    let g:pymode_lint_select = ["E501", "W0011", "W430"]
+
+对错误进行排序
+如果非空，错误会按照预先订单的顺序进行排列，例如E.g. let g:pymode_lint_sort = ['E','C','I'] ？
+>
+    let g:pymode_lint_sort = []
+
+当发现错误时自动打开(quickfix)窗口
+>
+    let g:pymode_lint_cwindow = 1
+
+开启放置标志
+>
+    let g:pymode_lint_signs = 1
+
+标志的放置的定义如下:
+>
+    let g:pymode_lint_todo_symbol = 'WW'
+    let g:pymode_lint_comment_symbol = 'CC'
+    let g:pymode_lint_visual_symbol = 'RR'
+    let g:pymode_lint_error_symbol = 'EE'
+    let g:pymode_lint_info_symbol = 'II'
+    let g:pymode_lint_pyflakes_symbol = 'FF'
+
+---
+
+3.1 设置代码检查选项
+
+Python-mode有能力通过几个选项来设置代码检查规范的选项
+
+设置PEP8的选项
+>
+    let g:pymode_lint_options_pep8 =
+        \ {'max_line_length': g:pymode_options_max_line_length}
+
+查看链接 https://pep8.readthedocs.org/en/1.4.6/intro.html#configuration 了解更多信息.
+
+设置Pyflakes选项
+>
+    let g:pymode_lint_options_pyflakes = { 'builtins': '_' }
+
+设置maccabe选项
+>
+    let g:pymode_lint_options_mccabe = { 'complexity': 12 }
+
+设置pep257选项
+>
+    let g:pymode_lint_options_pep257 = {}
+
+设置pylint选项
+>
+    let g:pymode_lint_options_pylint =
+        \ {'max-line-length': g:pymode_options_max_line_length}
+
+查看 http://docs.pylint.org/features.html#options 获取更多信息 
+
+---
+
+4. Rope支持
+
+Python-mode支持基于Rope库的代码重构选项、代码自动补充和帮助
+命令:
+|:PymodeRopeAutoImport| -- 解决鼠标选中元素的导入功能
+|:PymodeRopeModuleToPackage| -- 将当前模块转化成包 
+|:PymodeRopeNewProject| -- 在当前工作目录下打开新的Rope项目
+|:PymodeRopeRedo| -- 撤回上次重构的更改
+|:PymodeRopeRegenerate| --  重新产生工程的缓存
+|:PymodeRopeRenameModule| -- 重新命名当前模块
+|:PymodeRopeUndo| -- 取消上次重构的更能该
+
+打开Rope脚本的重构更能
+>
+    let g:pymode_rope = 1
+
+Rope项目的折叠
 
 
