@@ -277,6 +277,7 @@ Manually set breakpoint command (leave empty for automatic detection)
 >
     let g:pymode_breakpoint_cmd = ''
 
+	
 
 ===============================================================================
 3. Code checking ~
@@ -851,6 +852,7 @@ structure and then execute the remaning of the instructions/assertions.
         Copyright (c) 2012 Hynek Schlawack <hs@ox.cx>
         http://github.com/hynek/vim-python-pep8-indent
 
+		
 
 ===============================================================================
 9. License ~
