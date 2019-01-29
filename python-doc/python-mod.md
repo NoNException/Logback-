@@ -645,7 +645,7 @@ Enable all python highlights                              *'g:pymode_syntax_all'
 
 Highlight "print" as a function             *'g:pymode_syntax_print_as_function'*
 >
-    let g:pymode_syntax_print_as_function = 0
+		let g:pymode_syntax_print_as_function = 0
 
 Highlight "async/await" keywords        *'g:pymode_syntax_highlight_async_await'*
 >
@@ -870,4 +870,4 @@ Klenov". Thanks for your support!
 
 -------------------------------------------------------------------------------
 
- vim:tw=79:ts=8:ft=help:norl:
+ zim:tw=79:ts=8:ft=help:norl:
