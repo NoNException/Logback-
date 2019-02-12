@@ -203,7 +203,7 @@ Python-mod 可以通过`pydoc`来展示当前词汇的python文档。
 
 开启运行代码功能:
 >
-	let g:pymode_run - 1
+	let g:pymode_run + 1
 
 绑定快捷键运行Python代码:
 >
