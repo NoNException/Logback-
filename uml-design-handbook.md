@@ -359,9 +359,23 @@ g --> |是| i[业务主角]
 
 可以实时查看的图谱列表，和知识条目。
 
-![image-20190329005045627](/Users/zongzi/Library/Application Support/typora-user-images/image-20190329005045627.png)
+#### 获取用例
+
+根据用户的描述，整理成了三个主要的用户用例。初识概念表示概念的初步的获取，用户可以对一个概念获取基本的映像。整理概念表示的是对概念的多次整理过程，在这一个阶段，用户校对、整理了概念，这正是一个学习的过程。在最后的创造阶段，用户可以创建自己的知识条目。
+
+![image-20190330004025638](/Users/zongzi/Library/Application Support/typora-user-images/image-20190330004025638.png)
 
 #### 业务建模
 
-获取原始资料概念图谱-百科/wiki图谱文件生成用例场景活动图
+编号:BC001-wiki
+
+名称:初识概念活动图-wiki场景
+
+![image-20190330010731505](/Users/zongzi/Library/Application Support/typora-user-images/image-20190330010731505.png)
+
+编号:BC001-wordCloud
+
+名称:初识概念活动图-词云用例场景
+
+![image-20190330011245897](/Users/zongzi/Library/Application Support/typora-user-images/image-20190330011245897.png)
 
