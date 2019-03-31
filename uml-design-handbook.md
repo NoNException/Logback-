@@ -363,7 +363,7 @@ g --> |是| i[业务主角]
 
 根据用户的描述，整理成了三个主要的用户用例。初识概念表示概念的初步的获取，用户可以对一个概念获取基本的映像。整理概念表示的是对概念的多次整理过程，在这一个阶段，用户校对、整理了概念，这正是一个学习的过程。在最后的创造阶段，用户可以创建自己的知识条目。
 
-![image-20190330004025638](/Users/zongzi/Library/Application Support/typora-user-images/image-20190330004025638.png)
+![image-20190331214406703](/Users/zongzi/Library/Application Support/typora-user-images/image-20190331214406703.png)
 
 #### 业务建模
 
@@ -371,11 +371,23 @@ g --> |是| i[业务主角]
 
 名称:初识概念活动图-wiki场景
 
-![image-20190330010731505](/Users/zongzi/Library/Application Support/typora-user-images/image-20190330010731505.png)
+![image-20190331210522806](/Users/zongzi/Library/Application Support/typora-user-images/image-20190331210522806.png)
 
 编号:BC001-wordCloud
 
 名称:初识概念活动图-词云用例场景
 
-![image-20190330011245897](/Users/zongzi/Library/Application Support/typora-user-images/image-20190330011245897.png)
+![image-20190331210540222](/Users/zongzi/Library/Application Support/typora-user-images/image-20190331210540222.png)
+
+编号:BC002-Edit
+
+名称:整理概念-修正图谱
+
+![image-20190331213312910](/Users/zongzi/Library/Application Support/typora-user-images/image-20190331213312910.png)
+
+编号:BC002-Review
+
+名称:知识创造-构建回顾
+
+![image-20190331214921846](/Users/zongzi/Library/Application Support/typora-user-images/image-20190331214921846.png)
 
