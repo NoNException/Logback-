@@ -371,7 +371,23 @@ g --> |是| i[业务主角]
 
 名称:初识概念活动图-wiki场景
 
-![image-20190331210522806](/Users/zongzi/Library/Application Support/typora-user-images/image-20190331210522806.png)
+![dimage-20190331210522806](/Users/zongzi/Library/Application Support/typora-user-images/image-20190331210522806.png)
+
+业务用例规约
+
+| 用例名称       | 初识概念活动图-wiki场景                                      |
+| -------------- | ------------------------------------------------------------ |
+| 用例描述       | 用户根据需要的了解的概念，<br>查找相关的百科或者wiki页面<br>了解wiki的内容，画出概念图<br>标识出概念的关键词，关键词<br>关键词之间的联系。 |
+| 前置条件       | 提交的资料属于wiki、百度百科页面                             |
+| 后置条件       | 获得了指定的概念图                                           |
+| 主过程描述     | 用户根据需要的了解的概念<br/>查找相关的百科或者wiki页面
+了解wiki的内容，画出概念图
+标识出概念的关键词，关键词
+关键词之间的联系。 |
+| 分支过程描述   |                                                              |
+| 异常过程描述   |                                                              |
+| 业务规则       |                                                              |
+| 涉及的业务实体 |                                                              |
 
 编号:BC001-wordCloud
 
@@ -391,3 +407,4 @@ g --> |是| i[业务主角]
 
 ![image-20190331214921846](/Users/zongzi/Library/Application Support/typora-user-images/image-20190331214921846.png)
 
+领域建模
